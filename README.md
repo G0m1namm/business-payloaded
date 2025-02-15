@@ -41,7 +41,7 @@ This roadmap outlines the steps to build a basic e-commerce platform using Paylo
 
 **Phase 2: Basic Customer & Order Handling (Priority 2 - Essential for Transactions)**
 
-- **[ ] 3. Configure Users Collection for Customers:**
+- **[x] 3. Configure Users Collection for Customers:**
   - **Payload Terminology:** Leverage Payload's built-in Users Collection for customer accounts.
   - **Actionable Items:**
     - Review the default "Users" Collection in Payload CMS.
@@ -52,6 +52,22 @@ This roadmap outlines the steps to build a basic e-commerce platform using Paylo
       - `order_history` (Field Type: Relationship): To link users to their past orders (will be connected to the "Orders" Collection in the next phase).
       - `cart` (Field Type: JSON or Blocks): To temporarily store shopping cart data per user. _(For a simpler initial cart, JSON might suffice. Blocks can offer more structure later)_
     - Focus on enabling basic user registration and login functionality on the front-end.
+  - **[x] 3.x Add 'roles' Field to Users Collection:**
+    - **Actionable Items:**
+      - In the "Users" Collection configuration, add a new field named `roles`.
+      - Set the Field Type to `select`.
+      - Define the following options for the `select` field: `['customer', 'admin', 'product-manager', 'order-manager', 'content-editor']` (or customize roles as needed).
+      - _(Optional) Set a default role, likely 'customer', for new user registrations._
+  - **[ ] 3.y Implement Access Control for Roles:**
+    - **Actionable Items:**
+      - **Define Collection Access Control:**
+        - For "Products" and "Categories" Collections: Grant `create`, `read`, `update`, `delete` access to 'admin' and 'product-manager' roles. Grant `read` access to 'customer' and public users.
+        - For "Orders" Collection: Grant full access to 'admin' and 'order-manager'. Grant `create` access to 'customer' (for placing orders) and `read` access to 'customer' for their own orders only (implement user-specific read access).
+        - For "Users" Collection: Grant full access to 'admin'. Grant 'customer' limited access to read and update their own user document only.
+        - For "Pages" Collection: Grant full access to 'admin' and 'content-editor'. Grant `read` access to 'customer' and public users.
+      - **Define Field-Level Access Control (as needed):**
+        - If there are sensitive fields in any collection (e.g., cost price in "Products", detailed user data in "Users"), further refine access control at the field level to restrict read/write access based on roles.
+      - **Test Access Control:** Thoroughly test the access control rules to ensure that each role can only access the intended parts of the Payload CMS and perform allowed actions.
 - **[ ] 4. Implement Basic Shopping Cart Functionality:**
   - **Payload Terminology:** Utilize Payload's API to interact with the "Users" Collection and manage cart data.
   - **Actionable Items:**

@@ -16,3 +16,5 @@ export const socialMediaTypes = [
     value: 'x',
   },
 ]
+
+export const roles = ['super-admin', 'admin', 'product-manager', 'order-manager', 'editor', 'user']
