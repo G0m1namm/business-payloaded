@@ -13,6 +13,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    products: Product;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -21,12 +22,13 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: number;
+    defaultIDType: string;
   };
   globals: {
     header: Header;
@@ -68,7 +70,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
+  id: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -85,7 +87,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: number;
+  id: string;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -101,23 +103,91 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * First picture will be taken as the main product image
+   */
+  images?: (string | null) | Media;
+  price?: number | null;
+  categories?: string | null;
+  productVariations?: (SizeVariationBlock | ColorVariationBlock)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SizeVariationBlock".
+ */
+export interface SizeVariationBlock {
+  sizes?:
+    | {
+        sizeTag: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sizeVariation';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColorVariationBlock".
+ */
+export interface ColorVariationBlock {
+  colors?:
+    | {
+        colorName: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'colorVariation';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
+  id: string;
   document?:
     | ({
         relationTo: 'users';
-        value: number | User;
+        value: string | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: number | Media;
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -127,10 +197,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number;
+  id: string;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   key?: string | null;
   value?:
@@ -150,7 +220,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number;
+  id: string;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -191,6 +261,55 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  slug?: T;
+  slugLock?: T;
+  title?: T;
+  description?: T;
+  images?: T;
+  price?: T;
+  categories?: T;
+  productVariations?:
+    | T
+    | {
+        sizeVariation?: T | SizeVariationBlockSelect<T>;
+        colorVariation?: T | ColorVariationBlockSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SizeVariationBlock_select".
+ */
+export interface SizeVariationBlockSelect<T extends boolean = true> {
+  sizes?:
+    | T
+    | {
+        sizeTag?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ColorVariationBlock_select".
+ */
+export interface ColorVariationBlockSelect<T extends boolean = true> {
+  colors?:
+    | T
+    | {
+        colorName?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -226,8 +345,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "header".
  */
 export interface Header {
-  id: number;
-  logo: number | Media;
+  id: string;
+  logo: string | Media;
   navItems?:
     | {
         type: 'link' | 'collapsible';
@@ -237,7 +356,7 @@ export interface Header {
           newTab?: boolean | null;
           reference?: {
             relationTo: 'media';
-            value: number | Media;
+            value: string | Media;
           } | null;
           url?: string | null;
           label: string;
@@ -253,7 +372,7 @@ export interface Header {
                 newTab?: boolean | null;
                 reference?: {
                   relationTo: 'media';
-                  value: number | Media;
+                  value: string | Media;
                 } | null;
                 url?: string | null;
                 label: string;
@@ -276,7 +395,7 @@ export interface Header {
  * via the `definition` "footer".
  */
 export interface Footer {
-  id: number;
+  id: string;
   navItems?:
     | {
         type: 'link' | 'collapsible';
@@ -286,7 +405,7 @@ export interface Footer {
           newTab?: boolean | null;
           reference?: {
             relationTo: 'media';
-            value: number | Media;
+            value: string | Media;
           } | null;
           url?: string | null;
           label: string;
@@ -302,7 +421,7 @@ export interface Footer {
                 newTab?: boolean | null;
                 reference?: {
                   relationTo: 'media';
-                  value: number | Media;
+                  value: string | Media;
                 } | null;
                 url?: string | null;
                 label: string;

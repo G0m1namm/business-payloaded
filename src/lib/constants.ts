@@ -16,5 +16,3 @@ export const socialMediaTypes = [
     value: 'x',
   },
 ]
-
-export type SocialMedias = keyof typeof socialMediaTypes
