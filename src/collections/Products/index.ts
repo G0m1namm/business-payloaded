@@ -41,7 +41,12 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'categories',
-      type: 'text', // TODO: change to Relationship when Categories collection is created
+      type: 'relationship',
+      relationTo: 'categories',
+      hasMany: true,
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'productVariations',

@@ -12,6 +12,7 @@ import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { defaultLexical } from './fields/defaultLexical'
 import { Products } from './collections/Products'
+import { Categories } from './collections/Categories'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,7 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Products],
+  collections: [Users, Media, Products, Categories],
   globals: [Header, Footer],
   editor: defaultLexical,
   secret: process.env.PAYLOAD_SECRET || '',

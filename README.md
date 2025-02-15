@@ -30,7 +30,7 @@ This roadmap outlines the steps to build a basic e-commerce platform using Paylo
             - In the "Products" Collection, create a field named `product_variations` (Field Type: Blocks).
             - Configure the `product_variations` field to accept the "Size Variation" Block (`sizeVariation`) and the "Color Variation" Block (`colorVariation`) as valid block types.
             - _(Optional) Add instructions or descriptions to the `product_variations` field in the Admin UI to guide content editors on how to use these blocks._
-- **[ ] 2. Set up Categories Collection:**
+- **[x] 2. Set up Categories Collection:**
   - **Payload Terminology:** Collections for product categorization.
   - **Actionable Items:**
     - Create a new Collection in Payload CMS named "Categories".
